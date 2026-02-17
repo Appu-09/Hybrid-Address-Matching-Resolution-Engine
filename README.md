@@ -1,4 +1,4 @@
-** Hybrid Address Matching & Resolution Engine
+**Hybrid Address Matching & Resolution Engine**
 
 A production-style address matching system built to accurately detect duplicate and similar addresses using a hybrid approach combining rule-based validation and fuzzy similarity scoring.
 
@@ -6,7 +6,7 @@ A production-style address matching system built to accurately detect duplicate 
 
 
 
-📌 Problem Statement
+📌 **Problem Statement**
 
 Real-world address data is messy.
 
@@ -25,11 +25,11 @@ Addresses may contain:
 Simple string comparison fails in such scenarios.
 This project solves that using structured extraction + intelligent similarity scoring.
 
-🧠 Solution Approach
+🧠 **Solution Approach**
 
 This system uses a hybrid matching strategy:
 
-1️⃣ Address Normalization
+1️⃣ **Address Normalization**
 
 * Converts text to lowercase
 
@@ -37,7 +37,7 @@ This system uses a hybrid matching strategy:
 
 * Cleans tokens for structured comparison
 
-2️⃣ Component Extraction
+2️⃣ **Component Extraction**
 
 * Extracts structured elements from raw address text:
 
@@ -51,7 +51,7 @@ This system uses a hybrid matching strategy:
 
 * Full text (for fuzzy matching)
 
-3️⃣ Weighted Scoring System
+3️⃣ **Weighted Scoring System**
 
 * Each component contributes to final confidence:
 
@@ -64,13 +64,13 @@ Fuzzy Similarity - 10%
 
 If PIN conflicts → immediate NO MATCH
 
-Final decision:
+**Final decision**:
 
 Score ≥ Threshold → MATCH
 
 Score < Threshold → NO MATCH
 
-4️⃣ Fuzzy Matching
+4️⃣ **Fuzzy Matching**
 * Uses token sort similarity to handle:
 
 * Word order differences
@@ -79,7 +79,7 @@ Score < Threshold → NO MATCH
 
 * Extra tokens
 
-🚀 Features
+🚀 **Features**
 
 -> Rule-based validation
 
@@ -93,7 +93,7 @@ Score < Threshold → NO MATCH
 
 -> Interactive Streamlit UI
 
-🛠 Tech Stack
+🛠 **Tech Stack**
 
 * Python
 
@@ -105,7 +105,7 @@ Score < Threshold → NO MATCH
 
 * Streamlit
 
-🖥 Application Interface
+🖥 **Application Interface**
 
 The web app allows users to:
 
