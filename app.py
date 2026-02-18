@@ -5,19 +5,26 @@ from fuzzywuzzy import fuzz
 # -------------------------
 # Address Matching Function
 # -------------------------
-def decide_match_v6(addr1, addr2, threshold=70):
+def decide_match_v7(addr1, addr2, threshold=50):
 
     def extract_components(address):
         address = address.lower()
 
-        pin = re.search(r"\b\d{6}\b", address)
-        pin = pin.group() if pin else None
+        # PINCODE (strict 6-digit)
+        pin_match = re.search(r"\b\d{6}\b", address)
+        pin = pin_match.group() if pin_match else None
 
-        city = "hyderabad" if "hyderabad" in address else None
+        # CITY (expandable list)
+        city = None
+        cities = ["hyderabad", "bangalore", "mumbai", "delhi"]
+        for c in cities:
+            if c in address:
+                city = c
+                break
 
-        house = re.search(r"\b\d+\w?\b", address)
-
-        house = house.group() if house else None
+        # HOUSE NUMBER
+        house_match = re.search(r"\b\d+\w?\b", address)
+        house = house_match.group() if house_match else None
 
         return {
             "pin": pin,
@@ -29,6 +36,7 @@ def decide_match_v6(addr1, addr2, threshold=70):
     comp1 = extract_components(addr1)
     comp2 = extract_components(addr2)
 
+    # Immediate NO MATCH if PINs exist and conflict
     if comp1["pin"] and comp2["pin"] and comp1["pin"] != comp2["pin"]:
         return {
             "decision": "NO MATCH",
@@ -39,20 +47,24 @@ def decide_match_v6(addr1, addr2, threshold=70):
     score = 0
     breakdown = {}
 
-    if comp1["pin"] == comp2["pin"]:
+    # PIN Match (40 points)
+    if comp1["pin"] and comp2["pin"] and comp1["pin"] == comp2["pin"]:
         score += 40
         breakdown["pin"] = 40
 
-    if comp1["city"] == comp2["city"]:
+    # City Match (20 points)
+    if comp1["city"] and comp2["city"] and comp1["city"] == comp2["city"]:
         score += 20
         breakdown["city"] = 20
 
-    if comp1["house"] == comp2["house"]:
+    # House Match (15 points)
+    if comp1["house"] and comp2["house"] and comp1["house"] == comp2["house"]:
         score += 15
         breakdown["house"] = 15
 
+    # Fuzzy Similarity (0–40 points now)
     fuzzy_score = fuzz.token_sort_ratio(comp1["full"], comp2["full"])
-    fuzzy_points = fuzzy_score * 0.1
+    fuzzy_points = fuzzy_score * 0.4
     score += fuzzy_points
     breakdown["fuzzy"] = round(fuzzy_points, 2)
 
@@ -79,7 +91,7 @@ addr2 = st.text_area("Enter Address 2")
 
 if st.button("Check Match"):
     if addr1 and addr2:
-        result = decide_match_v6(addr1, addr2)
+        result = decide_match_v7(addr1, addr2)
 
         st.subheader("Result")
         st.write(f"**Decision:** {result['decision']}")
